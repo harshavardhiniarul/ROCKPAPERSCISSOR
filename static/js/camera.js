@@ -15,7 +15,8 @@ function normalizeMove(prediction) {
     const value = prediction.toLowerCase();
     if (value.includes("rock")) return "rock";
     if (value.includes("paper")) return "paper";
-    return "scissors";
+    if (value.includes("scissor")) return "scissors";
+    return null;
 }
 
 function capture(player) {
@@ -38,7 +39,9 @@ function capture(player) {
         fetch("/predict", { method: "POST", body: formData })
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(data => {
-                state.moves[player] = normalizeMove(data.prediction);
+                const move = normalizeMove(data.prediction);
+                if (!move) return Promise.reject();
+                state.moves[player] = move;
                 document.getElementById(`lock${player}`).classList.add("visible");
                 button.textContent = "Move locked";
                 setStatus(player, "Move hidden until both are ready");

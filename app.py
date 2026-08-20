@@ -3,17 +3,29 @@ os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 from flask import Flask, render_template, request, jsonify
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import DepthwiseConv2D
 from PIL import Image
 import numpy as np
 
 app = Flask(__name__)
 
-model = load_model("keras_model.h5")
+
+class LegacyDepthwiseConv2D(DepthwiseConv2D):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("groups", None)
+        super().__init__(*args, **kwargs)
+
+
+model = load_model(
+    "keras_model.h5",
+    custom_objects={"DepthwiseConv2D": LegacyDepthwiseConv2D},
+    compile=False
+)
 
 labels = []
 
 with open("labels.txt", "r") as file:
-    labels = [line.strip() for line in file.readlines()]
+    labels = [line.strip().split(maxsplit=1)[-1].lower() for line in file if line.strip()]
 
 
 @app.route("/")
