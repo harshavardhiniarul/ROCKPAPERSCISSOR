@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Rock Paper Scissors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AI Rock Paper Scissors</h1>
+
+    <p>Two Player AI Game</p>
+
+    <form action="/start" method="POST">
+
+        <input
+            type="text"
+            name="player1"
+            placeholder="Player 1 Name"
+            required
+        >
+
+        <input
+            type="text"
+            name="player2"
+            placeholder="Player 2 Name"
+            required
+        >
+
+        <button type="submit">
+            Start Game
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

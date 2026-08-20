@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Shoot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <main class="game-shell">
+        <header class="game-header">
+            <div>
+                <p class="eyebrow">Best of three</p>
+                <h1>Rock <span>Paper</span> Scissors</h1>
+                <p class="subtitle">Both players lock in. The reveal stays secret until everyone is ready.</p>
+            </div>
+            <div class="round-badge"><span id="roundLabel">Round 1</span><small>first to 2</small></div>
+        </header>
+
+        <section class="scoreboard score-hidden" id="scoreboard" aria-label="Scoreboard">
+            <div class="score-card active" id="scoreCard1">
+                <span class="score-label">Player 01</span>
+                <strong>{{ player1 }}</strong>
+                <span class="score" id="score1">0</span>
+            </div>
+            <div class="score-middle"><span>VS</span><small id="scoreHint">Scores reveal after 3 moves</small><small
+                    class="draw-count"><b id="draws">0</b> draws</small></div>
+            <div class="score-card" id="scoreCard2">
+                <span class="score-label">Player 02</span>
+                <strong>{{ player2 }}</strong>
+                <span class="score" id="score2">0</span>
+            </div>
+        </section>
+
+        <section class="players" aria-label="Players">
+            <article class="player-panel" id="panel1">
+                <div class="panel-heading">
+                    <div class="player-number">01</div>
+                    <div>
+                        <h2>{{ player1 }}</h2>
+                        <p>Make your sign</p>
+                    </div>
+                </div>
+                <div class="camera-frame">
+                    <video id="camera1" autoplay playsinline></video>
+                    <div class="camera-guide">Show one hand in frame</div>
+                    <div class="lock-overlay" id="lock1"><span>LOCKED IN</span><small>Your sign is hidden</small></div>
+                </div>
+                <canvas id="canvas1"></canvas>
+                <button class="capture-button" id="capture1" onclick="capture(1)"><span class="button-icon">↗</span>
+                    Lock in move</button>
+                <p class="move-status" id="move1">Waiting for your sign</p>
+            </article>
+
+            <div class="versus-mark" aria-hidden="true">VS</div>
+
+            <article class="player-panel" id="panel2">
+                <div class="panel-heading">
+                    <div class="player-number">02</div>
+                    <div>
+                        <h2>{{ player2 }}</h2>
+                        <p>Make your sign</p>
+                    </div>
+                </div>
+                <div class="camera-frame">
+                    <video id="camera2" autoplay playsinline></video>
+                    <div class="camera-guide">Show one hand in frame</div>
+                    <div class="lock-overlay" id="lock2"><span>LOCKED IN</span><small>Your sign is hidden</small></div>
+                </div>
+                <canvas id="canvas2"></canvas>
+                <button class="capture-button" id="capture2" onclick="capture(2)"><span class="button-icon">↗</span>
+                    Lock in move</button>
+                <p class="move-status" id="move2">Waiting for your sign</p>
+            </article>
+        </section>
+
+        <section class="result-panel" aria-live="polite">
+            <p class="result-kicker" id="resultKicker">Ready when you are</p>
+            <h2 id="result">Make your moves!</h2>
+            <p id="resultDetail">The reveal happens after both players lock in.</p>
+            <button class="next-button hidden" id="nextButton" onclick="startNextRound()">Play next round
+                <span>→</span></button>
+        </section>
+    </main>
+    <div id="player-data" data-player1="{{ player1|e }}" data-player2="{{ player2|e }}" hidden></div>
+    <script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+</body>
+
+</html>
