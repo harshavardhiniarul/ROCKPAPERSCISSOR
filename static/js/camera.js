@@ -12,12 +12,77 @@ navigator.mediaDevices?.getUserMedia({ video: true }).then(stream => {
 });
 
 function normalizeMove(prediction) {
-    const value = prediction.toLowerCase();
+    const value = String(prediction).trim().toLowerCase();
+
     if (value.includes("rock")) return "rock";
     if (value.includes("paper")) return "paper";
     if (value.includes("scissor")) return "scissors";
+
     return null;
 }
+
+function getWinner(playerOne, playerTwo) {
+    if (playerOne === playerTwo) return 0;
+
+    if (
+        (playerOne === "rock" && playerTwo === "scissors") ||
+        (playerOne === "paper" && playerTwo === "rock") ||
+        (playerOne === "scissors" && playerTwo === "paper")
+    ) {
+        return 1;
+    }
+
+    return 2;
+}
+
+function revealRound() {
+    if (!state.moves[1] || !state.moves[2]) {
+        document.getElementById("resultKicker").textContent =
+            "One move locked in";
+        document.getElementById("result").textContent =
+            "Waiting for the other player";
+        return;
+    }
+
+    const first = state.moves[1];
+    const second = state.moves[2];
+    const winner = getWinner(first, second);
+
+    console.log("Player 1:", first);
+    console.log("Player 2:", second);
+    console.log("Winner:", winner);
+
+    state.completedMoves++;
+    updateScoreboardVisibility();
+
+    if (winner === 0) {
+        state.draws++;
+        document.getElementById("draws").textContent = state.draws;
+        showResult(
+            "It's a draw",
+            `${title(first)} meets ${title(second)}. Throw again!`,
+            "draw"
+        );
+        setTimeout(startNextRound, 1100);
+        return;
+    }
+
+    state.scores[winner]++;
+    document.getElementById(`score${winner}`).textContent =
+        state.scores[winner];
+    document.getElementById(`scoreCard${winner}`).classList.add("winner");
+
+    const winnerName = playerNames[`player${winner}`];
+
+    showResult(
+        `${winnerName} takes the round`,
+        `${title(first)} vs ${title(second)} - ${winnerName} wins!`,
+        "win"
+    );
+
+    document.getElementById("nextButton").classList.remove("hidden");
+}
+
 
 function capture(player) {
     if (state.finished || state.moves[player]) return;
